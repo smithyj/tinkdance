@@ -1,0 +1,143 @@
+version: '3.9'
+
+networks:
+  tinkdance:
+    driver: ${NETWORKS_DRIVER}
+
+services:
+  golang:
+    build:
+      context: golang
+    image: tinkdance_golang:latest
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${APP_PATH}:/usr/src/app
+    ports:
+      - "8100:8100"
+      - "8101:8101"
+      - "8102:8102"
+      - "9100:9100"
+      - "9101:9101"
+      - "9102:9102"
+    stdin_open: true
+    tty: true
+    networks:
+      - tinkdance
+    restart: always
+    container_name: tinkdance_golang
+
+  etcd:
+    build:
+      context: etcd
+    image: tinkdance_etcd:latest
+    environment:
+      - TZ=${TZ}
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - "${ETCD_PORT}:2379"
+    networks:
+      - tinkdance
+    restart: always
+    container_name: tinkdance_etcd
+
+  mysql:
+    build:
+      context: mysql
+    image: tinkdance_mysql:latest
+    environment:
+      - TZ=${TZ}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/mysql:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+    networks:
+      - tinkdance
+    restart: always
+    container_name: tinkdance_mysql
+
+  redis:
+    build:
+      context: redis
+    image: tinkdance_redis:latest
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${DATA_PATH}/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - tinkdance
+    restart: always
+    container_name: tinkdance_redis
+
+  prometheus:
+    build:
+      context: prometheus
+    image: tinkdance_prometheus:latest
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./prometheus/prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    networks:
+      - tinkdance
+    restart: always
+    privileged: true
+    container_name: tinkdance_prometheus
+
+  grafana:
+    build:
+      context: grafana
+    image: tinkdance_grafana:latest
+    environment:
+      - TZ=${TZ}
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    networks:
+      - tinkdance
+    restart: always
+    container_name: tinkdance_grafana
+
+  jaeger:
+    build:
+      context: jaeger
+    image: tinkdance_jaeger:latest
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${DATA_PATH}/jaeger:/tmp
+    ports:
+      - "${JAEGER_PORT}:16686"
+    networks:
+      - tinkdance
+    restart: always
+    container_name: tinkdance_jaeger
+
+  dtm:
+    build:
+      context: dtm
+    image: tinkdance_dtm:latest
+    environment:
+      - TZ=${TZ}
+    entrypoint:
+      - "/app/dtm/dtm"
+      - "-c=/app/dtm/configs/config.yaml"
+    volumes:
+      - ./dtm/config.yaml:/app/dtm/configs/config.yaml
+    ports:
+      - "${DTM_HTTP_PORT}:36789"
+      - "${DTM_GRPC_PORT}:36790"
+    networks:
+      - tinkdance
+    restart: always
+    container_name: thinkdance_dtm
+
+
