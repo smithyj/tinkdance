@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./pb";
+
+// 登录 =============================================
+// 账号 + 密码登录
+message LoginWithAccountPasswordRequest {
+  string Name = 1;
+  string Password = 2;
+  optional string Code = 3;
+}
+message LoginWithAccountPasswordResponse {
+  uint64 AccountId = 1;
+}
+
+// 邮箱 + 密码登录
+message LoginWithEmailPasswordRequest {
+  string Email = 1;
+  string Password = 2;
+  optional string Code = 3;
+}
+message LoginWithEmailPasswordResponse {
+  uint64 AccountId = 1;
+}
+
+// 邮箱 + 验证码登录
+message LoginWithEmailCodeRequest {
+  string Email = 1;
+  string Code = 2;
+}
+message LoginWithEmailCodeResponse {
+  uint64 AccountId = 1;
+}
+
+// 手机 + 密码登录
+message LoginWithMobilePasswordRequest {
+  string Region = 1;
+  string Mobile = 2;
+  string Password = 3;
+  optional string Code = 4;
+}
+message LoginWithMobilePasswordResponse {
+  uint64 AccountId = 1;
+}
+
+// 手机 + 验证码登录
+message LoginWithMobileCodeRequest {
+  string Region = 1;
+  string Mobile = 2;
+  string Code = 3;
+}
+message LoginWithMobileCodeResponse {
+  uint64 AccountId = 1;
+}
+
+
+// 注册 =============================================
+// 账号 + 密码注册
+message RegisterWithAccountPasswordRequest {
+  string Name = 1;
+  string Password = 2;
+  string Code = 3;
+}
+message RegisterWithAccountPasswordResponse {
+  uint64 AccountId = 1;
+}
+
+// 邮箱 + 验证码注册
+message RegisterWithEmailCodeRequest {
+  string Email = 1;
+  string Code = 2;
+  optional string Password = 3;
+}
+message RegisterWithEmailCodeResponse {
+  uint64 AccountId = 1;
+}
+
+// 手机号 + 验证码注册
+message RegisterWithMobileCodeRequest {
+  string Region = 1;
+  string Mobile = 2;
+  string Code = 3;
+  optional string Password = 4;
+}
+message RegisterWithMobileCodeResponse {
+  uint64 AccountId = 1;
+}
+
+service Passport {
+  rpc LoginWithAccountPassword(LoginWithAccountPasswordRequest) returns (LoginWithAccountPasswordResponse);
+  rpc LoginWithEmailPassword(LoginWithEmailPasswordRequest) returns (LoginWithEmailPasswordResponse);
+  rpc LoginWithEmailCode(LoginWithEmailCodeRequest) returns (LoginWithEmailCodeResponse);
+  rpc LoginWithMobilePassword(LoginWithMobilePasswordRequest) returns (LoginWithMobilePasswordResponse);
+  rpc LoginWithMobileCode(LoginWithMobileCodeRequest) returns (LoginWithMobileCodeResponse);
+  rpc RegisterWithAccountPassword(RegisterWithAccountPasswordRequest) returns (RegisterWithAccountPasswordResponse);
+  rpc RegisterWithEmailCode(RegisterWithEmailCodeRequest) returns (RegisterWithEmailCodeResponse);
+  rpc RegisterWithMobileCode(RegisterWithMobileCodeRequest) returns (RegisterWithMobileCodeResponse);
+}

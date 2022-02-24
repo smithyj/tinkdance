@@ -17,22 +17,27 @@ RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.lis
     vim
 
 # 添加环境变量
+USER root
 RUN go env -w GOPROXY=https://goproxy.cn/,direct
 
 # 安装 air 工具（热加载）
-RUN go install github.com/cosmtrek/air@v1.15.1
+USER root
+RUN GOPROXY=https://goproxy.cn/,direct go install github.com/cosmtrek/air@v1.15.1
 
 # 安装 goctl
 USER root
-RUN go install github.com/zeromicro/go-zero/tools/goctl@master
+RUN GOPROXY=https://goproxy.cn/,direct go install github.com/zeromicro/go-zero/tools/goctl@master
 
 # $GOPATH/bin 添加到环境变量中
+USER root
 ENV PATH $GOPATH/bin:$PATH
 
 # 自动安装 go-zero 环境依赖
 USER root
-RUN goctl env check -i -f
+RUN GOPROXY=https://goproxy.cn/,direct goctl env check -i -f
+
 # 赋权执行权限
+USER root
 RUN chmod +x /go/bin/*
 
 # 清理垃圾

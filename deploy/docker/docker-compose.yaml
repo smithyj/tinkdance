@@ -14,12 +14,8 @@ services:
     volumes:
       - ${APP_PATH}:/usr/src/app
     ports:
-      - "8100:8100"
-      - "8101:8101"
-      - "8102:8102"
-      - "9100:9100"
-      - "9101:9101"
-      - "9102:9102"
+      - "8000:8000"
+      - "9000:9000"
     stdin_open: true
     tty: true
     networks:
