@@ -1,0 +1,6 @@
+Name: passport.rpc
+ListenOn: 0.0.0.0:8000
+Etcd:
+  Hosts:
+    - etcd:2379
+  Key: passport.rpc
