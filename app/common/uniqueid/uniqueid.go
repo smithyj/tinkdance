@@ -15,6 +15,7 @@ func GenerateId() uint64 {
 	id, err := flake.NextID()
 	if err != nil {
 		logx.Severef("flake NextId failed with:%s \n", err)
+		panic(err)
 	}
 	return id
 }
