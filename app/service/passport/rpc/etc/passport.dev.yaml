@@ -4,3 +4,10 @@ Etcd:
   Hosts:
     - etcd:2379
   Key: passport.rpc
+
+Mysql:
+  DataSource: root:123456@tcp(mysql:3306)/tinkdance?charset=utf8mb4&parseTime=True&loc=Local
+
+CacheRedis:
+  - Host: redis:6379
+    Type: node
